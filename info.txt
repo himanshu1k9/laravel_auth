@@ -37,4 +37,63 @@
     me (return current user)
 
 6. create api.php and put all routes here 
-    
+
+7. Register api.php in bootstrap > app.php
+
+8. Now test the apis by postman
+
+####################  By Guards and Providers ###############################
+
+1. Guards : Define how users are authenticated (session or token).
+2. Providers : Define how users are retrieved (from DB etc.).
+    EX : In config > auth.php
+        'guards' => [
+            'web' => [
+                'driver' => 'session',
+                'provider' => 'users',
+            ],
+            'api' => [
+                'driver' => 'token', // passport/sanctum/jwt
+                'provider' => 'users',
+            ],
+        ],
+
+        'providers' => [
+            'users' => [
+                'driver' => 'eloquent',
+                'model' => App\Models\User::class,
+            ],
+        ],
+
+        ## Custom Guards
+            ---------------------
+            'guards' => [
+                'admin' => [
+                    'driver' => 'session',
+                    'provider' => 'admins',
+                ],
+            ],
+
+            'providers' => [
+                'admins' => [
+                    'driver' => 'eloquent',
+                    'model' => App\Models\Admin::class,
+                ],
+            ],
+        
+        Now use custom auth like Auth::guard('admin')->attempt([...]);
+
+
+#################### Laravel Sanctum (API Token Auth) ####################################
+Note: Good for SPA or mobile apps.
+
+installation: 
+    1. composer require laravel/sanctum
+    2. php artisan vendor:publish --tag=sanctum-config
+    3. php artisan migrate
+    4. use use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful; this in api.php routes
+    5. now Generate token like this :
+              $user = Auth::user();
+              $token = $user->createToken('token-name')->plainTextToken;
+
+    and use.
