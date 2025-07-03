@@ -1,0 +1,40 @@
+1. create the project : composer create-project laravel/laravel app name
+2. require breeze : composer require laravel/breeze --dev
+    a. php artisan breeze:install [Options 1- blade, 2- yes, 3- PHPUnit(1)]
+    b. npm install && npm run dev
+    c. php artisan migrate
+4. php artisan serve
+
+############ Token-based Authentication (JWT) ####################
+1. composer require tymon/jwt-auth
+2. Publich : php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+3. Generate Secret : php artisan jwt:Secret
+4. Update Config/auth.php : 
+    EX: 'guards' => [
+             'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+            ],
+        ],
+5. User model me jwt subject add :
+        use Tymon\JWTAuth\Contracts\JWTSubject;
+
+        class User extends Authenticatable implements JWTSubject {
+            public function getJWTIdentifier() {
+                return $this->getKey();
+            }
+            public function getJWTCustomClaims() {
+                return [];
+            }
+        }
+5. Create AuthController with 
+    register
+
+    login
+
+    logout
+
+    me (return current user)
+
+6. create api.php and put all routes here 
+    
